@@ -29,8 +29,8 @@ const (
 	DefaultRedisReadTimeout = 180000
 	// DefaultRedisWriteTimeout Redis写入超时时间, 单位毫秒
 	DefaultRedisWriteTimeout = 3000
-	// DefaultRedisKeyExpire Redis key 过期时间，单位秒
-	DefaultRedisKeyExpire = 86400
+	// DefaultRedisExpireTime Redis key 过期时间，单位秒
+	DefaultRedisExpireTime = 86400
 )
 
 type Config struct {
@@ -50,7 +50,7 @@ type RedisConfig struct {
 	ConnectTimeout int // 连接超时, 单位毫秒
 	ReadTimeout    int // 读取超时, 单位毫秒
 	WriteTimeout   int // 写入超时, 单位毫秒
-	KeyExpire      int //key过期时间，单位秒
+	ExpireTime     int //key过期时间，单位秒
 }
 
 func (this *Config) initConfig(config *Config) {
@@ -68,7 +68,7 @@ func (this *Config) initConfig(config *Config) {
 	redisConnectTimeout := config.Redis.ConnectTimeout
 	redisReadTimeout := config.Redis.ReadTimeout
 	redisWriteTimeout := config.Redis.WriteTimeout
-	redisKeyExpire := config.Redis.KeyExpire
+	redisExpireTime := config.Redis.ExpireTime
 
 	if queueBlockTimeout > redisReadTimeout {
 		queueBlockTimeout = redisReadTimeout/100 - 2
@@ -101,8 +101,8 @@ func (this *Config) initConfig(config *Config) {
 	if redisWriteTimeout == 0 {
 		redisWriteTimeout = DefaultRedisWriteTimeout
 	}
-	if redisKeyExpire == 0 {
-		redisKeyExpire = DefaultRedisKeyExpire
+	if redisExpireTime == 0 {
+		redisExpireTime = DefaultRedisExpireTime
 	}
 	this.BucketSize = bucketSize
 	this.BucketName = bucketName
@@ -117,7 +117,7 @@ func (this *Config) initConfig(config *Config) {
 	this.Redis.ConnectTimeout = redisConnectTimeout
 	this.Redis.ReadTimeout = redisReadTimeout
 	this.Redis.WriteTimeout = redisWriteTimeout
-	this.Redis.KeyExpire = redisKeyExpire
+	this.Redis.ExpireTime = redisExpireTime
 }
 
 // 初始化默认配置
@@ -135,5 +135,5 @@ func (this *Config) initDefaultConfig() {
 	this.Redis.ConnectTimeout = DefaultRedisConnectTimeout
 	this.Redis.ReadTimeout = DefaultRedisReadTimeout
 	this.Redis.WriteTimeout = DefaultRedisWriteTimeout
-	this.Redis.KeyExpire = DefaultRedisKeyExpire
+	this.Redis.ExpireTime = DefaultRedisExpireTime
 }

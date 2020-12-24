@@ -34,7 +34,7 @@ func (this *Job) putJob(key string, job Job) error {
 	if err != nil {
 		return err
 	}
-	_, err = execRedisCommand("SET", key, value, "EX", Setting.Redis.KeyExpire)
+	_, err = execRedisCommand("SET", key, value, "EX", Setting.Redis.ExpireTime)
 	return err
 }
 
