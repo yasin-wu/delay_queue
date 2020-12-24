@@ -11,7 +11,7 @@ const (
 	DefaultBucketName = "dq_bucket_%d"
 	// DefaultQueueName 队列名称
 	DefaultQueueName = "dq_queue_%s"
-	// DefaultQueueBlockTimeout 轮询队列超时时间
+	// DefaultQueueBlockTimeout 轮询队列超时时间 < Redis读取超时时间
 	DefaultQueueBlockTimeout = 178
 	// DefaultRedisHost Redis连接地址
 	DefaultRedisHost = "127.0.0.1:6379"
@@ -69,6 +69,11 @@ func (this *Config) initConfig(config *Config) {
 	redisReadTimeout := config.Redis.ReadTimeout
 	redisWriteTimeout := config.Redis.WriteTimeout
 	redisKeyExpire := config.Redis.KeyExpire
+
+	if queueBlockTimeout > redisReadTimeout {
+		queueBlockTimeout = redisReadTimeout/100 - 2
+	}
+
 	if bucketSize == 0 {
 		bucketSize = DefaultBucketSize
 	}

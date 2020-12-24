@@ -3,6 +3,7 @@ package delay_queue
 import (
 	"fmt"
 	"testing"
+	"time"
 
 	"github.com/davecgh/go-spew/spew"
 	"github.com/yasin-wu/delay-queue/delayqueue"
@@ -17,7 +18,6 @@ func TestDelayQueue(t *testing.T) {
 			},
 		},
 	}
-	delayCmd.InitConfig()
 	delayCmd.Init()
 	topic := "test_topic"
 	for i := 1; i < 4; i++ {
@@ -33,8 +33,9 @@ func TestDelayQueue(t *testing.T) {
 		job, err := delayCmd.Pop(topic)
 		if err != nil {
 			t.Error(err.Error())
-			break
 		}
+		fmt.Println("=====time", time.Now())
 		spew.Dump(job)
+		delayCmd.Delete(job.Id)
 	}
 }

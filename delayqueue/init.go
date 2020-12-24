@@ -12,8 +12,13 @@ var (
 	bucketNameChan <-chan string
 )
 
+func (this *DelayCmd) Init() {
+	this.initConfig()
+	this.initQueue()
+}
+
 // Init 初始化配置
-func (this *DelayCmd) InitConfig() {
+func (this *DelayCmd) initConfig() {
 	Setting = &Config{}
 	if this.Config == nil {
 		Setting.initDefaultConfig()
@@ -23,7 +28,7 @@ func (this *DelayCmd) InitConfig() {
 }
 
 // Init 初始化延时队列
-func (this *DelayCmd) Init() {
+func (this *DelayCmd) initQueue() {
 	initRedisPool()
 	initTimers()
 	bucketNameChan = generateBucketName()
