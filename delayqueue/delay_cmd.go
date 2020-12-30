@@ -4,6 +4,8 @@ import (
 	"errors"
 	"strings"
 	"time"
+
+	"github.com/gomodule/redigo/redis"
 )
 
 type DelayCmd struct {
@@ -87,6 +89,20 @@ func (this *DelayCmd) Get(id string) error {
 
 	if job == nil {
 		return nil
+	}
+	return nil
+}
+
+func (this *DelayCmd) ClearCache() error {
+	res, err := redis.Strings(execRedisCommand("KEYS", "*"))
+	if err != nil {
+		return err
+	}
+	for _, v := range res {
+		_, err := execRedisCommand("DEL", v)
+		if err != nil {
+			continue
+		}
 	}
 	return nil
 }
