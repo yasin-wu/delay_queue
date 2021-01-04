@@ -5,8 +5,10 @@ var (
 )
 
 const (
+	// DefaultZRangeLimit
+	DefaultZRangeLimit = 1000
 	// DefaultBucketSize bucket数量
-	DefaultBucketSize = 3
+	DefaultBucketSize = 10
 	// DefaultBucketName bucket名称
 	DefaultBucketName = "dq_bucket_%d"
 	// DefaultQueueName 队列名称
@@ -34,8 +36,9 @@ const (
 )
 
 type Config struct {
+	ZRangeLimit       int         // zrang max
 	BucketSize        int         // bucket数量
-	BucketName        string      // bucket在redis中的键名,
+	BucketName        string      // bucket在redis中的键名
 	QueueName         string      // ready queue在redis中的键名
 	QueueBlockTimeout int         // 调用blpop阻塞超时时间, 单位秒, 修改此项, redis.read_timeout必须做相应调整
 	Redis             RedisConfig // redis配置
@@ -55,6 +58,7 @@ type RedisConfig struct {
 
 func (this *Config) initConfig(config *Config) {
 
+	zrangeLimit := config.ZRangeLimit
 	bucketSize := config.BucketSize
 	bucketName := config.BucketName
 	queueName := config.QueueName
@@ -73,7 +77,9 @@ func (this *Config) initConfig(config *Config) {
 	if queueBlockTimeout > redisReadTimeout {
 		queueBlockTimeout = redisReadTimeout/100 - 2
 	}
-
+	if zrangeLimit == 0 {
+		zrangeLimit = DefaultZRangeLimit
+	}
 	if bucketSize == 0 {
 		bucketSize = DefaultBucketSize
 	}
@@ -104,6 +110,7 @@ func (this *Config) initConfig(config *Config) {
 	if redisExpireTime == 0 {
 		redisExpireTime = DefaultRedisExpireTime
 	}
+	this.ZRangeLimit = zrangeLimit
 	this.BucketSize = bucketSize
 	this.BucketName = bucketName
 	this.QueueName = queueName
@@ -122,6 +129,7 @@ func (this *Config) initConfig(config *Config) {
 
 // 初始化默认配置
 func (this *Config) initDefaultConfig() {
+	this.ZRangeLimit = DefaultZRangeLimit
 	this.BucketSize = DefaultBucketSize
 	this.BucketName = DefaultBucketName
 	this.QueueName = DefaultQueueName

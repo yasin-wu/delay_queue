@@ -12,6 +12,7 @@ import (
 func TestDelayQueue(t *testing.T) {
 	delayCmd := &delayqueue.DelayCmd{
 		Config: &delayqueue.Config{
+			BucketSize: 10,
 			Redis: delayqueue.RedisConfig{
 				Host:     "192.168.131.135:6379",
 				Password: "1qazxsw21201",
@@ -24,7 +25,7 @@ func TestDelayQueue(t *testing.T) {
 		job := delayqueue.Job{
 			Topic: topic,
 			Id:    fmt.Sprintf("%d", i),
-			Delay: int64(10 * i),
+			Delay: int64(10),
 			TTR:   86400,
 		}
 		delayCmd.Push(job)

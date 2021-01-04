@@ -16,7 +16,7 @@ func (this *BucketItem) pushToBucket(key string, timestamp int64, jobId string) 
 }
 
 func (this *BucketItem) getFromBucket(key string) (*BucketItem, error) {
-	value, err := execRedisCommand("ZRANGE", key, 0, 0, "WITHSCORES")
+	value, err := execRedisCommand("ZRANGE", key, 0, Setting.ZRangeLimit, "WITHSCORES")
 	if err != nil {
 		return nil, err
 	}
