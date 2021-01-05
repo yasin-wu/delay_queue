@@ -24,13 +24,8 @@ func (this *DelayCmd) Push(job Job) error {
 	if job.Topic == "" {
 		return errors.New("topic 不能为空")
 	}
-
 	if job.Delay <= 0 || job.Delay > (1<<31) {
 		return errors.New("delay 取值范围1 - (2^31 - 1)")
-	}
-
-	if job.TTR <= 0 || job.TTR > 86400 {
-		return errors.New("ttr 取值范围1 - 86400")
 	}
 
 	job.Delay = time.Now().Unix() + job.Delay

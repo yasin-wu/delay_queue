@@ -12,7 +12,7 @@ type DelayQueue struct {
 }
 
 func (this *DelayQueue) push(job Job) error {
-	if job.Id == "" || job.Topic == "" || job.Delay < 0 || job.TTR <= 0 {
+	if job.Id == "" || job.Topic == "" || job.Delay < 0 {
 		return errors.New("invalid job")
 	}
 
@@ -43,8 +43,12 @@ func (this *DelayQueue) pop(topics []string) (*Job, error) {
 		return nil, err
 	}
 
-	timestamp := time.Now().Unix() + job.TTR
-	err = this.bucket.pushToBucket(<-bucketNameChan, timestamp, job.Id)
+	if job == nil {
+		return nil, errors.New("job is nil")
+	}
+
+	//timestamp := time.Now().Unix() + job.Delay
+	//err = this.bucket.pushToBucket(<-bucketNameChan, timestamp, job.Id)
 	return job, err
 }
 
