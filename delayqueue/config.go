@@ -17,8 +17,8 @@ const (
 	DefaultQueueBlockTimeout = 178
 	// DefaultRedisHost Redis连接地址
 	DefaultRedisHost = "127.0.0.1:6379"
-	// DefaultRedisDb Redis数据库编号
-	DefaultRedisDb = 1
+	// DefaultRedisDB Redis数据库编号
+	DefaultRedisDB = 1
 	// DefaultRedisPassWord Redis密码
 	DefaultRedisPassWord = ""
 	// DefaultRedisMaxIdle Redis连接池闲置连接数
@@ -46,7 +46,7 @@ type Config struct {
 
 type RedisConfig struct {
 	Host           string
-	Db             int
+	DB             int
 	PassWord       string
 	MaxIdle        int // 连接池最大空闲连接数
 	MaxActive      int // 连接池最大激活连接数
@@ -65,7 +65,7 @@ func (this *Config) initConfig(config *Config) {
 	queueBlockTimeout := config.QueueBlockTimeout
 
 	redisHost := config.Redis.Host
-	redisDb := config.Redis.Db
+	redisDB := config.Redis.DB
 	redisPassWord := config.Redis.PassWord
 	redisMaxIdle := config.Redis.MaxIdle
 	redisMaxActive := config.Redis.MaxActive
@@ -117,7 +117,7 @@ func (this *Config) initConfig(config *Config) {
 	this.QueueBlockTimeout = queueBlockTimeout
 
 	this.Redis.Host = redisHost
-	this.Redis.Db = redisDb
+	this.Redis.DB = redisDB
 	this.Redis.PassWord = redisPassWord
 	this.Redis.MaxIdle = redisMaxIdle
 	this.Redis.MaxActive = redisMaxActive
@@ -136,7 +136,7 @@ func (this *Config) initDefaultConfig() {
 	this.QueueBlockTimeout = DefaultQueueBlockTimeout
 
 	this.Redis.Host = DefaultRedisHost
-	this.Redis.Db = DefaultRedisDb
+	this.Redis.DB = DefaultRedisDB
 	this.Redis.PassWord = DefaultRedisPassWord
 	this.Redis.MaxIdle = DefaultRedisMaxIdle
 	this.Redis.MaxActive = DefaultRedisMaxActive

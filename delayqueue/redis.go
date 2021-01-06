@@ -44,7 +44,7 @@ func redisDial() (redis.Conn, error) {
 		}
 	}
 
-	_, err = conn.Do("SELECT", Setting.Redis.Db)
+	_, err = conn.Do("SELECT", Setting.Redis.DB)
 	if err != nil {
 		conn.Close()
 		log.Printf("redis选择数据库失败#%s", err.Error())
