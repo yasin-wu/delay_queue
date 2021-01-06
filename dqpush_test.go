@@ -13,7 +13,7 @@ func TestDQPush(t *testing.T) {
 			BucketSize: 10,
 			Redis: delayqueue.RedisConfig{
 				Host:     "192.168.131.135:6379",
-				Password: "1qazxsw21201",
+				PassWord: "1qazxsw21201",
 			},
 		},
 	}

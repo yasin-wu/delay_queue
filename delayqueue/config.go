@@ -19,8 +19,8 @@ const (
 	DefaultRedisHost = "127.0.0.1:6379"
 	// DefaultRedisDb Redis数据库编号
 	DefaultRedisDb = 1
-	// DefaultRedisPassword Redis密码
-	DefaultRedisPassword = ""
+	// DefaultRedisPassWord Redis密码
+	DefaultRedisPassWord = ""
 	// DefaultRedisMaxIdle Redis连接池闲置连接数
 	DefaultRedisMaxIdle = 10
 	// DefaultRedisMaxActive Redis连接池最大激活连接数, 0为不限制
@@ -47,7 +47,7 @@ type Config struct {
 type RedisConfig struct {
 	Host           string
 	Db             int
-	Password       string
+	PassWord       string
 	MaxIdle        int // 连接池最大空闲连接数
 	MaxActive      int // 连接池最大激活连接数
 	ConnectTimeout int // 连接超时,单位毫秒
@@ -66,7 +66,7 @@ func (this *Config) initConfig(config *Config) {
 
 	redisHost := config.Redis.Host
 	redisDb := config.Redis.Db
-	redisPassword := config.Redis.Password
+	redisPassWord := config.Redis.PassWord
 	redisMaxIdle := config.Redis.MaxIdle
 	redisMaxActive := config.Redis.MaxActive
 	redisConnectTimeout := config.Redis.ConnectTimeout
@@ -118,7 +118,7 @@ func (this *Config) initConfig(config *Config) {
 
 	this.Redis.Host = redisHost
 	this.Redis.Db = redisDb
-	this.Redis.Password = redisPassword
+	this.Redis.PassWord = redisPassWord
 	this.Redis.MaxIdle = redisMaxIdle
 	this.Redis.MaxActive = redisMaxActive
 	this.Redis.ConnectTimeout = redisConnectTimeout
@@ -137,7 +137,7 @@ func (this *Config) initDefaultConfig() {
 
 	this.Redis.Host = DefaultRedisHost
 	this.Redis.Db = DefaultRedisDb
-	this.Redis.Password = DefaultRedisPassword
+	this.Redis.PassWord = DefaultRedisPassWord
 	this.Redis.MaxIdle = DefaultRedisMaxIdle
 	this.Redis.MaxActive = DefaultRedisMaxActive
 	this.Redis.ConnectTimeout = DefaultRedisConnectTimeout

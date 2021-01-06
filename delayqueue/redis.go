@@ -36,8 +36,8 @@ func redisDial() (redis.Conn, error) {
 		return nil, err
 	}
 
-	if Setting.Redis.Password != "" {
-		if _, err := conn.Do("AUTH", Setting.Redis.Password); err != nil {
+	if Setting.Redis.PassWord != "" {
+		if _, err := conn.Do("AUTH", Setting.Redis.PassWord); err != nil {
 			conn.Close()
 			log.Printf("redis认证失败#%s", err.Error())
 			return nil, err
