@@ -3,8 +3,8 @@ module github.com/yasin-wu/delay-queue
 go 1.14
 
 require (
-	github.com/davecgh/go-spew v1.1.1
 	github.com/gomodule/redigo v1.8.3
+	github.com/stretchr/testify v1.6.1 // indirect
 )
 
 replace github.com/yasin-wu/delay-queue => ./
