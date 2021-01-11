@@ -26,8 +26,8 @@ func (JobActionSMS) Execute(args []interface{}) error {
 func TestDelayQueue(t *testing.T) {
 	conf := &delayqueue.Config{
 		Redis: &delayqueue.RedisConf{
-			Host:     "47.108.155.25:6379",
-			PassWord: "yasin3467",
+			Host:     "127.0.0.1:6379",
+			PassWord: "",
 		},
 	}
 	dq := delayqueue.New(conf)

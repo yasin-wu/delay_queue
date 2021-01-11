@@ -3,6 +3,7 @@ package delayqueue
 import (
 	"encoding/json"
 	"fmt"
+	"reflect"
 	"strconv"
 	"sync"
 	"time"
@@ -94,26 +95,30 @@ func (cli *redisClient) getBatch(key string) ([]RedisZ, int64, error) {
 }
 
 func (cli *redisClient) handleBatchVal(batchVal []interface{}) []RedisZ {
-	var redisZs []RedisZ
 	var err error
-	for i, v := range batchVal {
+	redisZs := make([]RedisZ, len(batchVal)/2)
+	for i := 0; i < len(redisZs); i++ {
 		var redisZ RedisZ
-		var buff []byte
-		for _, v := range v.([]uint8) {
-			buff = append(buff, v)
+		redisZ.Member = readString(batchVal[i*2])
+		redisZ.Score, err = strconv.ParseInt(readString(batchVal[i*2+1]), 10, 64)
+		if err != nil {
+			delayQueue.logger.ErrorF("string to int64 failed , error:%s", err.Error())
 		}
-		switch i {
-		case 0:
-			redisZ.Member = string(buff)
-		case 1:
-			redisZ.Score, err = strconv.ParseInt(string(buff), 10, 64)
-			if err != nil {
-				delayQueue.logger.ErrorF("string to int64 failed , error:%s", err.Error())
-			}
-		}
-		redisZs = append(redisZs, redisZ)
+		redisZs[i] = redisZ
 	}
 	return redisZs
+}
+
+func readString(value interface{}) string {
+	var buffer []byte
+	typeString := reflect.TypeOf(value).String()
+	switch typeString {
+	case "[]uint8":
+		for _, v := range value.([]uint8) {
+			buffer = append(buffer, v)
+		}
+	}
+	return string(buffer)
 }
 
 func (cli *redisClient) clearBatch(key string, lastScore int64) error {
