@@ -1,8 +1,8 @@
 package delayqueue
 
 import (
-	"yasin-wu/delay-queue/cronjob"
-	"yasin-wu/delay-queue/logger"
+	"github.com/yasin-wu/delay-queue/cronjob"
+	"github.com/yasin-wu/delay-queue/logger"
 )
 
 type DelayQueue struct {

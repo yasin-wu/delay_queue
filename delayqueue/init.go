@@ -4,8 +4,8 @@ import (
 	"time"
 
 	"github.com/gomodule/redigo/redis"
-	"yasin-wu/delay-queue/cronjob"
-	"yasin-wu/delay-queue/logger"
+	"github.com/yasin-wu/delay-queue/cronjob"
+	"github.com/yasin-wu/delay-queue/logger"
 )
 
 func initDelayQueue(conf *Config) {
