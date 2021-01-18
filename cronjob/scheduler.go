@@ -5,7 +5,7 @@ import (
 	"sort"
 	"time"
 
-	"github.com/yasin-wu/delay-queue/logger"
+	"yasin-wu/delay-queue/logger"
 )
 
 type Scheduler struct {

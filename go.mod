@@ -1,4 +1,4 @@
-module github.com/yasin-wu/delay-queue
+module yasin-wu/delay-queue
 
 go 1.14
 
@@ -7,4 +7,4 @@ require (
 	github.com/stretchr/testify v1.6.1 // indirect
 )
 
-replace github.com/yasin-wu/delay-queue => ./
+replace yasin-wu/delay-queue => ./
