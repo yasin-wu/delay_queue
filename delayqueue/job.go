@@ -11,7 +11,10 @@ type jobExecutor struct {
 }
 
 type DelayJob struct {
-	ID        string
+	//任务ID
+	ID string
+	//延迟执行时间,单位:秒
 	DelayTime int64
-	Args      []interface{}
+	//任务执行参数
+	Args []interface{}
 }
