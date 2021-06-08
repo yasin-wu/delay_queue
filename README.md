@@ -12,5 +12,5 @@ go get -u github.com/yasin-wu/delay-queue
 <br>
 
 ````
-require github.com/yasin-wu/delay-queue v1.1.3
+require github.com/yasin-wu/delay-queue v1.1.4
 ````
