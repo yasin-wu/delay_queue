@@ -25,6 +25,6 @@ type DelayJob struct {
 type DelayType int
 
 const (
-	DelayTypeDuration DelayType = 1 //延迟多少秒执行
-	DelayTypeDate     DelayType = 2 //具体执行时间(时间戳:秒)
+	DelayTypeDuration DelayType = iota //延迟多少秒执行
+	DelayTypeDate                      //具体执行时间(时间戳:秒)
 )
