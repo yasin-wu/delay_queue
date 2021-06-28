@@ -28,9 +28,9 @@ func (cli *redisClient) ZAdd(job DelayJob) error {
 		return err
 	}
 	switch job.Type {
-	case 0:
+	case DelayTypeDuration:
 		_, err = cli.execRedisCommand("ZADD", key, job.DelayTime+time.Now().Unix(), member)
-	case 1:
+	case DelayTypeDate:
 		_, err = cli.execRedisCommand("ZADD", key, job.DelayTime, member)
 	default:
 		_, err = cli.execRedisCommand("ZADD", key, job.DelayTime+time.Now().Unix(), member)
