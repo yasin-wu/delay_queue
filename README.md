@@ -6,5 +6,5 @@ go get -u github.com/yasin-wu/delay-queue
 ````
 推荐使用go.mod
 ````
-require github.com/yasin-wu/delay-queue v1.1.4
+require github.com/yasin-wu/delay-queue v1.3.0
 ````
