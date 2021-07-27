@@ -2,9 +2,6 @@ package delayqueue
 
 import (
 	"errors"
-	"time"
-
-	"github.com/gomodule/redigo/redis"
 )
 
 const (
@@ -12,21 +9,8 @@ const (
 	defaultKeyPrefix  = "delay_queue"
 )
 
-const (
-	defaultRedisHost           = "127.0.0.1:6379"
-	defaultRedisPassWord       = ""
-	defaultRedisDB             = 0
-	defaultRedisMaxIdle        = 10
-	defaultRedisMaxActive      = 0
-	defaultRedisConnectTimeout = 5000
-	defaultRedisReadTimeout    = 180000
-	defaultRedisWriteTimeout   = 3000
-	defaultIdleTimeout         = 300 * time.Second
-)
-
 var (
 	redisCli   *redisClient
-	redisPool  *redis.Pool
 	delayQueue *DelayQueue
 )
 

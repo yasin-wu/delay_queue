@@ -3,6 +3,7 @@ package delayqueue
 import (
 	"github.com/yasin-wu/delay-queue/cronjob"
 	"github.com/yasin-wu/delay-queue/logger"
+	"github.com/yasin-wu/utils/redis"
 )
 
 type DelayQueue struct {
@@ -10,7 +11,7 @@ type DelayQueue struct {
 	scheduler          *cronjob.Scheduler
 	jobExecutorFactory map[string]*jobExecutor
 	redisCli           *redisClient
-	redisConf          *RedisConf
+	redisConf          *redis.Config
 }
 
 func New(conf *Config) *DelayQueue {
@@ -45,7 +46,7 @@ func (dq *DelayQueue) SetLogger(logger logger.Logger) {
 
 func (dq *DelayQueue) availableJobIDs() []string {
 	var IDs []string
-	for k, _ := range dq.jobExecutorFactory {
+	for k := range dq.jobExecutorFactory {
 		IDs = append(IDs, k)
 	}
 	return IDs

@@ -5,6 +5,8 @@ import (
 	"testing"
 	"time"
 
+	"github.com/yasin-wu/utils/redis"
+
 	"github.com/yasin-wu/delay-queue/delayqueue"
 )
 
@@ -25,7 +27,7 @@ func (JobActionSMS) Execute(args []interface{}) error {
 
 func TestDelayQueue(t *testing.T) {
 	conf := &delayqueue.Config{
-		Redis: &delayqueue.RedisConf{
+		Redis: &redis.Config{
 			Host:     "192.168.131.135:6379",
 			PassWord: "1qazxsw21201",
 		},

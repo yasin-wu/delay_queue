@@ -8,7 +8,9 @@ import (
 	"sync"
 	"time"
 
-	"github.com/gomodule/redigo/redis"
+	mredis "github.com/gomodule/redigo/redis"
+
+	"github.com/yasin-wu/utils/redis"
 )
 
 type RedisZ struct {
@@ -19,6 +21,7 @@ type RedisZ struct {
 type redisClient struct {
 	keyPrefix  string
 	batchLimit int64
+	client     *redis.Client
 }
 
 func (cli *redisClient) ZAdd(job DelayJob) error {
@@ -29,11 +32,11 @@ func (cli *redisClient) ZAdd(job DelayJob) error {
 	}
 	switch job.Type {
 	case DelayTypeDuration:
-		_, err = cli.execRedisCommand("ZADD", key, job.DelayTime+time.Now().Unix(), member)
+		_, err = cli.client.Exec("ZADD", key, job.DelayTime+time.Now().Unix(), member)
 	case DelayTypeDate:
-		_, err = cli.execRedisCommand("ZADD", key, job.DelayTime, member)
+		_, err = cli.client.Exec("ZADD", key, job.DelayTime, member)
 	default:
-		_, err = cli.execRedisCommand("ZADD", key, job.DelayTime+time.Now().Unix(), member)
+		_, err = cli.client.Exec("ZADD", key, job.DelayTime+time.Now().Unix(), member)
 	}
 	return err
 }
@@ -83,8 +86,8 @@ func (cli *redisClient) getBatch(key string) ([]RedisZ, int64, error) {
 	var redisZs []RedisZ
 	var lastScore int64
 	var err error
-	batchVal, err := redis.Values(
-		cli.execRedisCommand("ZRANGEBYSCORE", key,
+	batchVal, err := mredis.Values(
+		cli.client.Exec("ZRANGEBYSCORE", key,
 			0, time.Now().Unix(),
 			"WITHSCORES",
 			"limit", 0, cli.batchLimit))
@@ -93,7 +96,7 @@ func (cli *redisClient) getBatch(key string) ([]RedisZ, int64, error) {
 	}
 	redisZs = cli.handleBatchVal(batchVal)
 	lastScore = redisZs[len(redisZs)-1].Score
-	batchVal, err = redis.Values(cli.execRedisCommand("ZRANGEBYSCORE", key,
+	batchVal, err = mredis.Values(cli.client.Exec("ZRANGEBYSCORE", key,
 		0, lastScore,
 		"WITHSCORES",
 		"limit", 0, cli.batchLimit))
@@ -129,16 +132,10 @@ func readString(value interface{}) string {
 }
 
 func (cli *redisClient) clearBatch(key string, lastScore int64) error {
-	_, err := cli.execRedisCommand("ZREMRANGEBYSCORE", key, 0, lastScore)
+	_, err := cli.client.Exec("ZREMRANGEBYSCORE", key, 0, lastScore)
 	return err
 }
 
 func (cli *redisClient) formatKey(name string) string {
 	return fmt.Sprintf("%s:%s", cli.keyPrefix, name)
-}
-
-func (cli *redisClient) execRedisCommand(command string, args ...interface{}) (interface{}, error) {
-	redis := redisPool.Get()
-	defer redis.Close()
-	return redis.Do(command, args...)
 }
