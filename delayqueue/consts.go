@@ -10,10 +10,5 @@ const (
 )
 
 var (
-	redisCli   *redisClient
-	delayQueue *DelayQueue
-)
-
-var (
 	ErrorsDelayQueueRegisterIDDuplicate = errors.New("your job id has been used")
 )

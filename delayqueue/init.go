@@ -6,6 +6,11 @@ import (
 	"github.com/yasin-wu/utils/redis"
 )
 
+var (
+	redisCli   *redisClient
+	delayQueue *DelayQueue
+)
+
 func initDelayQueue(conf *Config) {
 	delayQueue = new(DelayQueue)
 	sche := cronjob.New()
