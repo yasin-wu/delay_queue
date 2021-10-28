@@ -1,8 +1,8 @@
 package delayqueue
 
 import (
-	"github.com/yasin-wu/delay-queue/cronjob"
-	"github.com/yasin-wu/delay-queue/logger"
+	"github.com/yasin-wu/delay_queue/cronjob"
+	"github.com/yasin-wu/delay_queue/logger"
 	"github.com/yasin-wu/utils/redis"
 )
 

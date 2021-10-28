@@ -1,4 +1,4 @@
-module github.com/yasin-wu/delay-queue
+module github.com/yasin-wu/delay_queue
 
 go 1.14
 

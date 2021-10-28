@@ -7,7 +7,7 @@ import (
 
 	"github.com/yasin-wu/utils/redis"
 
-	"github.com/yasin-wu/delay-queue/delayqueue"
+	"github.com/yasin-wu/delay_queue/delayqueue"
 )
 
 type JobActionSMS struct{}
@@ -28,8 +28,8 @@ func (JobActionSMS) Execute(args []interface{}) error {
 func TestDelayQueue(t *testing.T) {
 	conf := &delayqueue.Config{
 		Redis: &redis.Config{
-			Host:     "192.168.131.135:6379",
-			PassWord: "1qazxsw21201",
+			Host:     "47.108.155.25:6379",
+			PassWord: "yasin3467",
 		},
 	}
 	dq := delayqueue.New(conf)
