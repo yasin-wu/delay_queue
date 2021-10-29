@@ -12,6 +12,8 @@ import (
 
 type JobActionSMS struct{}
 
+var _ delayqueue.JobBaseAction = (*JobActionSMS)(nil)
+
 func (JobActionSMS) ID() string {
 	return "JobActionSMS"
 }
