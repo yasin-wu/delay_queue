@@ -31,7 +31,7 @@ func TestDelayQueue(t *testing.T) {
 	conf := &delayqueue.Config{
 		Redis: &redis.Config{
 			Host:     "47.108.155.25:6379",
-			PassWord: "yasin3467",
+			PassWord: "yasinwu",
 		},
 	}
 	dq := delayqueue.New(conf)
