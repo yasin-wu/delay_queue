@@ -36,8 +36,8 @@ github.com/xdg/scram v0.0.0-20180814205039-7eeb5667e42c/go.mod h1:lB8K/P019DLNhe
 github.com/xdg/stringprep v1.0.0/go.mod h1:Jhud4/sHMO4oL310DaZAKk9ZaJ08SJfe+sJh0HrGL1Y=
 github.com/yanyiwu/gojieba v1.1.2/go.mod h1:54wkP7sMJ6bklf7yPl6F+JG71dzVUU1WigZbR47nGdY=
 github.com/yasin-wu/go-tika v0.2.0/go.mod h1:MbWHSiiExeHjyMjrn1GFaZ1Y9O/IA4OdVkZKlDljmg4=
-github.com/yasin-wu/utils v1.3.1 h1:wcxfBU0C41MWKYwrfcUZdupq0PDraZCa4Nel6jd3xPo=
-github.com/yasin-wu/utils v1.3.1/go.mod h1:tquyJi+RT1ZxaHyWmt0TEsIc7dq28RjpEha0ea6ABII=
+github.com/yasin-wu/utils v1.3.4 h1:gHZZGdToopqg9G3X86M4fbLNLHB+BijdoK03Rg7BGzA=
+github.com/yasin-wu/utils v1.3.4/go.mod h1:tquyJi+RT1ZxaHyWmt0TEsIc7dq28RjpEha0ea6ABII=
 golang.org/x/crypto v0.0.0-20190308221718-c2843e01d9a2/go.mod h1:djNgcEr1/C05ACkg1iLfiJU5Ep61QUkGW8qpdssI0+w=
 golang.org/x/crypto v0.0.0-20190506204251-e1dfcc566284/go.mod h1:yigFU9vqHzYiE8UmvKecakEJjdnWj3jj499lnFckfCI=
 golang.org/x/crypto v0.0.0-20200622213623-75b288015ac9/go.mod h1:LzIPMQfyMNhhGPhUkYOs5KpL4U8rLKemX1yGLhDgUto=

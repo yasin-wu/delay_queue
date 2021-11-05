@@ -3,20 +3,11 @@ package delayqueue
 import (
 	"encoding/json"
 	"fmt"
-	"reflect"
-	"strconv"
 	"sync"
 	"time"
 
-	mredis "github.com/gomodule/redigo/redis"
-
 	"github.com/yasin-wu/utils/redis"
 )
-
-type RedisZ struct {
-	Score  int64
-	Member string
-}
 
 type redisClient struct {
 	keyPrefix  string
@@ -30,15 +21,17 @@ func (cli *redisClient) ZAdd(job DelayJob) error {
 	if err != nil {
 		return err
 	}
+	var z redis.Z
+	z.Member = string(member)
 	switch job.Type {
 	case DelayTypeDuration:
-		_, err = cli.client.Exec("ZADD", key, job.DelayTime+time.Now().Unix(), member)
+		z.Score = job.DelayTime + time.Now().Unix()
 	case DelayTypeDate:
-		_, err = cli.client.Exec("ZADD", key, job.DelayTime, member)
+		z.Score = job.DelayTime
 	default:
-		_, err = cli.client.Exec("ZADD", key, job.DelayTime+time.Now().Unix(), member)
+		z.Score = job.DelayTime + time.Now().Unix()
 	}
-	return err
+	return cli.client.ZAdd(key, z)
 }
 
 func (cli *redisClient) BatchHandle(IDs []string) error {
@@ -82,58 +75,23 @@ func (cli *redisClient) BatchHandle(IDs []string) error {
 	return nil
 }
 
-func (cli *redisClient) getBatch(key string) ([]RedisZ, int64, error) {
-	var redisZs []RedisZ
+func (cli *redisClient) getBatch(key string) ([]redis.Z, int64, error) {
+	var redisZs []redis.Z
 	var lastScore int64
 	var err error
-	batchVal, err := mredis.Values(
-		cli.client.Exec("ZRANGEBYSCORE", key,
-			0, time.Now().Unix(),
-			"WITHSCORES",
-			"limit", 0, cli.batchLimit))
-	if err != nil || len(batchVal) == 0 {
+	redisZs, err = cli.client.ZRangeByScore(key, "0", fmt.Sprintf("%d", time.Now().Unix()),
+		true, true, 0, int(cli.batchLimit))
+	if err != nil || len(redisZs) == 0 {
 		return redisZs, lastScore, err
 	}
-	redisZs = cli.handleBatchVal(batchVal)
 	lastScore = redisZs[len(redisZs)-1].Score
-	batchVal, err = mredis.Values(cli.client.Exec("ZRANGEBYSCORE", key,
-		0, lastScore,
-		"WITHSCORES",
-		"limit", 0, cli.batchLimit))
-	redisZs = cli.handleBatchVal(batchVal)
+	redisZs, err = cli.client.ZRangeByScore(key, "0", fmt.Sprintf("%d", lastScore),
+		true, true, 0, int(cli.batchLimit))
 	return redisZs, lastScore, err
 }
 
-func (cli *redisClient) handleBatchVal(batchVal []interface{}) []RedisZ {
-	var err error
-	redisZs := make([]RedisZ, len(batchVal)/2)
-	for i := 0; i < len(redisZs); i++ {
-		var redisZ RedisZ
-		redisZ.Member = readString(batchVal[i*2])
-		redisZ.Score, err = strconv.ParseInt(readString(batchVal[i*2+1]), 10, 64)
-		if err != nil {
-			delayQueue.logger.ErrorF("string to int64 failed , error:%s", err.Error())
-		}
-		redisZs[i] = redisZ
-	}
-	return redisZs
-}
-
-func readString(value interface{}) string {
-	var buffer []byte
-	typeString := reflect.TypeOf(value).String()
-	switch typeString {
-	case "[]uint8":
-		for _, v := range value.([]uint8) {
-			buffer = append(buffer, v)
-		}
-	}
-	return string(buffer)
-}
-
 func (cli *redisClient) clearBatch(key string, lastScore int64) error {
-	_, err := cli.client.Exec("ZREMRANGEBYSCORE", key, 0, lastScore)
-	return err
+	return cli.client.ZRemrangEByScore(key, "0", fmt.Sprintf("%d", lastScore))
 }
 
 func (cli *redisClient) formatKey(name string) string {

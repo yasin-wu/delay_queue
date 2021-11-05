@@ -21,7 +21,7 @@ func (JobActionSMS) ID() string {
 func (JobActionSMS) Execute(args []interface{}) error {
 	for _, arg := range args {
 		if phoneNumber, ok := arg.(string); ok {
-			fmt.Printf("sending sms to %s", phoneNumber)
+			fmt.Printf("sending sms to %s,time:%v", phoneNumber, time.Now())
 		}
 	}
 	return nil
@@ -32,6 +32,7 @@ func TestDelayQueue(t *testing.T) {
 		Redis: &redis.Config{
 			Host:     "47.108.155.25:6379",
 			PassWord: "yasinwu",
+			DB:       0,
 		},
 	}
 	dq := delayqueue.New(conf)
@@ -41,6 +42,7 @@ func TestDelayQueue(t *testing.T) {
 		return
 	}
 	dq.StartBackground()
+	fmt.Println("add job:", time.Now())
 	err = dq.AddJob(delayqueue.DelayJob{
 		ID:        (&JobActionSMS{}).ID(),
 		DelayTime: 2,
