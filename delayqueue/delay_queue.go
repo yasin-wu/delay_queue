@@ -11,11 +11,35 @@ type DelayQueue struct {
 	scheduler          *cronjob.Scheduler
 	jobExecutorFactory map[string]*jobExecutor
 	redisCli           *redisClient
-	redisConf          *redis.Config
 }
 
-func New(conf *Config) *DelayQueue {
-	initDelayQueue(conf)
+type Option func(delayQueue *DelayQueue)
+
+var delayQueue *DelayQueue
+
+func New(host, keyPrefix string, batchLimit int, options ...redis.Option) *DelayQueue {
+	delayQueue = &DelayQueue{}
+	if keyPrefix == "" {
+		keyPrefix = defaultKeyPrefix
+	}
+	if batchLimit == 0 {
+		batchLimit = defaultBatchLimit
+	}
+	cli, err := redis.New(host, options...)
+	if err != nil {
+		return nil
+	}
+	redisCli := &redisClient{
+		keyPrefix:  keyPrefix,
+		batchLimit: batchLimit,
+		client:     cli,
+	}
+	sche := cronjob.New()
+	sche.Register([]int{}, 1, DelayQueueCronJob{})
+	delayQueue.logger = logger.DefaultLogger
+	delayQueue.scheduler = sche
+	delayQueue.jobExecutorFactory = make(map[string]*jobExecutor)
+	delayQueue.redisCli = redisCli
 	return delayQueue
 }
 

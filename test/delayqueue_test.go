@@ -28,14 +28,8 @@ func (JobActionSMS) Execute(args []interface{}) error {
 }
 
 func TestDelayQueue(t *testing.T) {
-	conf := &delayqueue.Config{
-		Redis: &redis.Config{
-			Host:     "47.108.155.25:6379",
-			PassWord: "yasinwu",
-			DB:       0,
-		},
-	}
-	dq := delayqueue.New(conf)
+	dq := delayqueue.New("47.108.155.25:6379", "test-yasin",
+		0, redis.WithPassWord("yasinwu"))
 	err := dq.Register(JobActionSMS{})
 	if err != nil {
 		t.Errorf("register err:%v", err)
@@ -45,12 +39,12 @@ func TestDelayQueue(t *testing.T) {
 	fmt.Println("add job:", time.Now())
 	err = dq.AddJob(delayqueue.DelayJob{
 		ID:        (&JobActionSMS{}).ID(),
-		DelayTime: 2,
+		DelayTime: 10,
 		Args:      []interface{}{"181****9331"},
 	})
 	if err != nil {
 		t.Errorf("adddelay err:%v", err)
 		return
 	}
-	time.Sleep(10 * time.Second)
+	time.Sleep(20 * time.Second)
 }

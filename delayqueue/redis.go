@@ -11,7 +11,7 @@ import (
 
 type redisClient struct {
 	keyPrefix  string
-	batchLimit int64
+	batchLimit int
 	client     *redis.Client
 }
 
@@ -80,13 +80,13 @@ func (cli *redisClient) getBatch(key string) ([]redis.Z, int64, error) {
 	var lastScore int64
 	var err error
 	redisZs, err = cli.client.ZRangeByScore(key, "0", fmt.Sprintf("%d", time.Now().Unix()),
-		true, true, 0, int(cli.batchLimit))
+		true, true, 0, cli.batchLimit)
 	if err != nil || len(redisZs) == 0 {
 		return redisZs, lastScore, err
 	}
 	lastScore = redisZs[len(redisZs)-1].Score
 	redisZs, err = cli.client.ZRangeByScore(key, "0", fmt.Sprintf("%d", lastScore),
-		true, true, 0, int(cli.batchLimit))
+		true, true, 0, cli.batchLimit)
 	return redisZs, lastScore, err
 }
 
