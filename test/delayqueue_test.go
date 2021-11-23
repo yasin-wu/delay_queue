@@ -2,6 +2,7 @@ package test
 
 import (
 	"fmt"
+	"log"
 	"testing"
 	"time"
 
@@ -12,6 +13,10 @@ import (
 
 	"github.com/yasin-wu/delay_queue/delayqueue"
 )
+
+func init() {
+	log.SetFlags(log.Ldate | log.Ltime | log.Lshortfile)
+}
 
 type JobActionSMS struct{}
 
@@ -24,7 +29,7 @@ func (JobActionSMS) ID() string {
 func (JobActionSMS) Execute(args []interface{}) error {
 	for _, arg := range args {
 		if phoneNumber, ok := arg.(string); ok {
-			fmt.Printf("sending sms to %s,time:%v", phoneNumber, time.Now())
+			fmt.Printf("sending sms to %s,time:%v\n", phoneNumber, time.Now())
 		}
 	}
 	return nil
@@ -42,19 +47,17 @@ func TestDelayQueue(t *testing.T) {
 		0, redis.WithPassWord(password.(string)))
 	err := dq.Register(JobActionSMS{})
 	if err != nil {
-		t.Errorf("register err:%v", err)
-		return
+		log.Fatal(err)
 	}
 	dq.StartBackground()
-	fmt.Println("add job:", time.Now())
+	fmt.Printf("add job:%v\n", time.Now())
 	err = dq.AddJob(delayqueue.DelayJob{
 		ID:        (&JobActionSMS{}).ID(),
 		DelayTime: 10,
 		Args:      []interface{}{"181****9331"},
 	})
 	if err != nil {
-		t.Errorf("adddelay err:%v", err)
-		return
+		log.Fatal(err)
 	}
 	time.Sleep(20 * time.Second)
 }
