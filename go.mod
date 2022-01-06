@@ -4,7 +4,7 @@ go 1.17
 
 require (
 	github.com/apolloconfig/agollo/v4 v4.0.9
-	github.com/yasin-wu/utils v1.4.0
+	github.com/yasin-wu/utils v1.5.0
 )
 
 require (
