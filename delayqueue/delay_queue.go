@@ -6,6 +6,10 @@ import (
 	"github.com/yasin-wu/utils/redis"
 )
 
+var delayQueue *DelayQueue
+
+type Option func(delayQueue *DelayQueue)
+
 /**
  * @author: yasin
  * @date: 2022/1/13 11:03
@@ -17,10 +21,6 @@ type DelayQueue struct {
 	jobExecutorFactory map[string]*jobExecutor
 	redisCli           *redisClient
 }
-
-type Option func(delayQueue *DelayQueue)
-
-var delayQueue *DelayQueue
 
 /**
  * @author: yasin
@@ -92,9 +92,15 @@ func (dq *DelayQueue) Register(action JobBaseAction) error {
  * @description: 添加延迟任务
  */
 func (dq *DelayQueue) AddJob(job DelayJob) error {
-	return dq.redisCli.ZAdd(job)
+	return dq.redisCli.zadd(job)
 }
 
+/**
+ * @author: yasin
+ * @date: 2022/1/13 13:22
+ * @params: logger logger.Logger
+ * @description: 设置日志
+ */
 func (dq *DelayQueue) SetLogger(logger logger.Logger) {
 	dq.logger = logger
 }

@@ -15,6 +15,11 @@ type jobExecutor struct {
 	action JobBaseAction
 }
 
+/**
+ * @author: yasin
+ * @date: 2022/1/13 13:23
+ * @description: 延迟任务
+ */
 type DelayJob struct {
 	ID        string        //任务ID
 	Type      DelayType     //时间类型:0-延迟多少秒执行,1-具体执行时间(时间戳:秒)

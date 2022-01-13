@@ -45,7 +45,7 @@ func TestDelayQueue(t *testing.T) {
 	fmt.Printf("add job:%v\n", time.Now())
 	err = dq.AddJob(delayqueue.DelayJob{
 		ID:        (&JobActionSMS{}).ID(),
-		DelayTime: 10,
+		DelayTime: 5,
 		Args:      []interface{}{"181****9331"},
 	})
 	if err != nil {

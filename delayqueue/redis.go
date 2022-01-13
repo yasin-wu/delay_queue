@@ -15,7 +15,7 @@ type redisClient struct {
 	client     *redis.Client
 }
 
-func (cli *redisClient) ZAdd(job DelayJob) error {
+func (cli *redisClient) zadd(job DelayJob) error {
 	key := cli.formatKey(job.ID)
 	member, err := json.Marshal(job)
 	if err != nil {
@@ -34,7 +34,7 @@ func (cli *redisClient) ZAdd(job DelayJob) error {
 	return cli.client.ZAdd(key, z)
 }
 
-func (cli *redisClient) BatchHandle(IDs []string) error {
+func (cli *redisClient) batchHandle(IDs []string) error {
 	var wg = sync.WaitGroup{}
 	wg.Add(len(IDs))
 	for _, name := range IDs {

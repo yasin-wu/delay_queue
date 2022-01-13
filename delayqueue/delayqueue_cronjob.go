@@ -8,7 +8,7 @@ func (DelayQueueCronJob) Name() string {
 
 func (DelayQueueCronJob) Process() error {
 	IDs := delayQueue.availableJobIDs()
-	return delayQueue.redisCli.BatchHandle(IDs)
+	return delayQueue.redisCli.batchHandle(IDs)
 }
 
 func (DelayQueueCronJob) IfActive() bool {
