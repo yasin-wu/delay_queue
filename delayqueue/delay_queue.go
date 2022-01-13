@@ -6,6 +6,11 @@ import (
 	"github.com/yasin-wu/utils/redis"
 )
 
+/**
+ * @author: yasin
+ * @date: 2022/1/13 11:03
+ * @description: DelayQueue Client
+ */
 type DelayQueue struct {
 	logger             logger.Logger
 	scheduler          *cronjob.Scheduler
@@ -17,6 +22,13 @@ type Option func(delayQueue *DelayQueue)
 
 var delayQueue *DelayQueue
 
+/**
+ * @author: yasin
+ * @date: 2022/1/13 11:04
+ * @params: host, keyPrefix string, batchLimit int, options ...redis.Option
+ * @return: *DelayQueue
+ * @description: 创建DelayQueue Client
+ */
 func New(host, keyPrefix string, batchLimit int, options ...redis.Option) *DelayQueue {
 	delayQueue = &DelayQueue{}
 	if keyPrefix == "" {
@@ -43,10 +55,22 @@ func New(host, keyPrefix string, batchLimit int, options ...redis.Option) *Delay
 	return delayQueue
 }
 
+/**
+ * @author: yasin
+ * @date: 2022/1/13 11:05
+ * @description: 启动延迟消息队列
+ */
 func (dq *DelayQueue) StartBackground() {
 	dq.scheduler.Start()
 }
 
+/**
+ * @author: yasin
+ * @date: 2022/1/13 11:04
+ * @params: action JobBaseAction
+ * @return: error
+ * @description: 注册延时服务
+ */
 func (dq *DelayQueue) Register(action JobBaseAction) error {
 	jobID := action.ID()
 	if _, ok := dq.jobExecutorFactory[jobID]; ok {
@@ -60,6 +84,13 @@ func (dq *DelayQueue) Register(action JobBaseAction) error {
 	return nil
 }
 
+/**
+ * @author: yasin
+ * @date: 2022/1/13 11:05
+ * @params: job DelayJob
+ * @return: error
+ * @description: 添加延迟任务
+ */
 func (dq *DelayQueue) AddJob(job DelayJob) error {
 	return dq.redisCli.ZAdd(job)
 }

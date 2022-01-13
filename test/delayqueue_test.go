@@ -6,9 +6,6 @@ import (
 	"testing"
 	"time"
 
-	"github.com/apolloconfig/agollo/v4"
-	"github.com/apolloconfig/agollo/v4/env/config"
-
 	"github.com/yasin-wu/utils/redis"
 
 	"github.com/yasin-wu/delay_queue/delayqueue"
@@ -36,15 +33,10 @@ func (JobActionSMS) Execute(args []interface{}) error {
 }
 
 func TestDelayQueue(t *testing.T) {
-	client, _ := agollo.StartWithConfig(func() (*config.AppConfig, error) {
-		return apolloConf, nil
-	})
-	fmt.Println("初始化Apollo配置成功")
-	cache := client.GetConfigCache(apolloConf.NamespaceName)
-	host, _ := cache.Get("redis.host")
-	password, _ := cache.Get("redis.password")
-	dq := delayqueue.New(host.(string), "test-yasin",
-		0, redis.WithPassWord(password.(string)))
+	host := "47.108.155.25:6379"
+	password := "yasinwu"
+	dq := delayqueue.New(host, "test-yasin",
+		0, redis.WithPassWord(password))
 	err := dq.Register(JobActionSMS{})
 	if err != nil {
 		log.Fatal(err)
