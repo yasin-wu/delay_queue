@@ -11,7 +11,7 @@ var delayQueue *DelayQueue
 type Option func(delayQueue *DelayQueue)
 
 /**
- * @author: yasin
+ * @author: yasinWu
  * @date: 2022/1/13 11:03
  * @description: DelayQueue Client
  */
@@ -23,7 +23,7 @@ type DelayQueue struct {
 }
 
 /**
- * @author: yasin
+ * @author: yasinWu
  * @date: 2022/1/13 11:04
  * @params: host, keyPrefix string, batchLimit int, options ...redis.Option
  * @return: *DelayQueue
@@ -56,7 +56,7 @@ func New(host, keyPrefix string, batchLimit int, options ...redis.Option) *Delay
 }
 
 /**
- * @author: yasin
+ * @author: yasinWu
  * @date: 2022/1/13 11:05
  * @description: 启动延迟消息队列
  */
@@ -65,7 +65,7 @@ func (dq *DelayQueue) StartBackground() {
 }
 
 /**
- * @author: yasin
+ * @author: yasinWu
  * @date: 2022/1/13 11:04
  * @params: action JobBaseAction
  * @return: error
@@ -85,7 +85,7 @@ func (dq *DelayQueue) Register(action JobBaseAction) error {
 }
 
 /**
- * @author: yasin
+ * @author: yasinWu
  * @date: 2022/1/13 11:05
  * @params: job DelayJob
  * @return: error
@@ -96,7 +96,7 @@ func (dq *DelayQueue) AddJob(job DelayJob) error {
 }
 
 /**
- * @author: yasin
+ * @author: yasinWu
  * @date: 2022/1/13 13:22
  * @params: logger logger.Logger
  * @description: 设置日志

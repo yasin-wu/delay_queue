@@ -1,7 +1,7 @@
 package delayqueue
 
 /**
- * @author: yasin
+ * @author: yasinWu
  * @date: 2022/1/13 11:06
  * @description: 延迟服务
  */
@@ -16,7 +16,7 @@ type jobExecutor struct {
 }
 
 /**
- * @author: yasin
+ * @author: yasinWu
  * @date: 2022/1/13 13:23
  * @description: 延迟任务
  */
