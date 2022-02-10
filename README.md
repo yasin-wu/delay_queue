@@ -21,6 +21,8 @@ func init() {
     log.SetFlags(log.Ldate | log.Ltime | log.Lshortfile)
 }
 
+var redisOptions = &delayqueue.RedisOptions{Addr: "47.108.155.25:6379", Password: "yasinwu"}
+
 type JobActionSMS struct{}
 
 var _ delayqueue.JobBaseAction = (*JobActionSMS)(nil)
@@ -39,10 +41,7 @@ func (JobActionSMS) Execute(args []interface{}) error {
 }
 
 func main() {
-    host := "47.108.155.25:6379"
-    password := "yasinwu"
-    dq := delayqueue.New(host, "test-yasin",
-    0, redis.WithPassWord(password))
+    dq := delayqueue.New("test-yasin", 0, redisOptions)
     err := dq.Register(JobActionSMS{})
     if err != nil {
         log.Fatal(err)
