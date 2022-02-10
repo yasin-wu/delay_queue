@@ -6,14 +6,14 @@ import (
 	"testing"
 	"time"
 
-	"github.com/yasin-wu/utils/redis"
-
-	"github.com/yasin-wu/delay_queue/delayqueue"
+	"github.com/yasin-wu/delay_queue/v2/delayqueue"
 )
 
 func init() {
 	log.SetFlags(log.Ldate | log.Ltime | log.Lshortfile)
 }
+
+var redisOptions = &delayqueue.RedisOptions{Addr: "47.108.155.25:6379", Password: "yasinwu"}
 
 type JobActionSMS struct{}
 
@@ -33,10 +33,7 @@ func (JobActionSMS) Execute(args []interface{}) error {
 }
 
 func TestDelayQueue(t *testing.T) {
-	host := "47.108.155.25:6379"
-	password := "yasinwu"
-	dq := delayqueue.New(host, "test-yasin",
-		0, redis.WithPassWord(password))
+	dq := delayqueue.New("test-yasin", 0, redisOptions)
 	err := dq.Register(JobActionSMS{})
 	if err != nil {
 		log.Fatal(err)

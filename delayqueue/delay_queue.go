@@ -1,9 +1,12 @@
 package delayqueue
 
 import (
-	"github.com/yasin-wu/delay_queue/cronjob"
-	"github.com/yasin-wu/delay_queue/logger"
-	"github.com/yasin-wu/utils/redis"
+	"context"
+
+	"github.com/go-redis/redis/v8"
+
+	"github.com/yasin-wu/delay_queue/v2/cronjob"
+	"github.com/yasin-wu/delay_queue/v2/logger"
 )
 
 var delayQueue *DelayQueue
@@ -25,11 +28,14 @@ type DelayQueue struct {
 /**
  * @author: yasinWu
  * @date: 2022/1/13 11:04
- * @params: host, keyPrefix string, batchLimit int, options ...redis.Option
+ * @params: keyPrefix string, batchLimit int64, redisOptions *RedisOptions
  * @return: *DelayQueue
  * @description: 创建DelayQueue Client
  */
-func New(host, keyPrefix string, batchLimit int, options ...redis.Option) *DelayQueue {
+func New(keyPrefix string, batchLimit int64, redisOptions *RedisOptions) *DelayQueue {
+	if redisOptions == nil {
+		redisOptions = defaultRedisOptions
+	}
 	delayQueue = &DelayQueue{}
 	if keyPrefix == "" {
 		keyPrefix = defaultKeyPrefix
@@ -37,14 +43,11 @@ func New(host, keyPrefix string, batchLimit int, options ...redis.Option) *Delay
 	if batchLimit == 0 {
 		batchLimit = defaultBatchLimit
 	}
-	cli, err := redis.New(host, options...)
-	if err != nil {
-		return nil
-	}
 	redisCli := &redisClient{
 		keyPrefix:  keyPrefix,
 		batchLimit: batchLimit,
-		client:     cli,
+		client:     redis.NewClient((*redis.Options)(redisOptions)),
+		ctx:        context.Background(),
 	}
 	sche := cronjob.New()
 	sche.Register([]int{}, 1, DelayQueueCronJob{})
