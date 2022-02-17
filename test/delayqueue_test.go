@@ -9,10 +9,6 @@ import (
 	"github.com/yasin-wu/delay_queue/v2/delayqueue"
 )
 
-func init() {
-	log.SetFlags(log.Ldate | log.Ltime | log.Lshortfile)
-}
-
 var redisOptions = &delayqueue.RedisOptions{Addr: "47.108.155.25:6379", Password: "yasinwu"}
 
 type JobActionSMS struct{}
