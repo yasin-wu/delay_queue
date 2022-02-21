@@ -4,19 +4,19 @@ delay queue 是基于Redis Zset实现的Golang版延时队列。以时间戳作�
 
 ## 安装
 
-````
+```
 go get -u github.com/yasin-wu/delay_queue
-````
+```
 
 推荐使用go.mod
 
-````
+```
 require github.com/yasin-wu/delay_queue/v2 v2.0.0
-````
+```
 
 ## 使用
 
-````go
+```go
 var redisOptions = &delayqueue.RedisOptions{Addr: "47.108.155.25:6379", Password: "yasinwu"}
 
 type JobActionSMS struct{}
@@ -55,4 +55,4 @@ func main() {
     time.Sleep(20 * time.Second)
 }
 
-````
+```
