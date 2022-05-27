@@ -23,6 +23,8 @@ var defaultRedisOptions = &RedisOptions{Addr: "localhost:6379", Password: "", DB
 
 func (r *redisClient) zadd(job DelayJob) error {
 	key := r.formatKey(job.ID)
+	delayTime := job.DelayTime
+	job.DelayTime = -1
 	member, err := json.Marshal(job)
 	if err != nil {
 		return err
@@ -31,11 +33,11 @@ func (r *redisClient) zadd(job DelayJob) error {
 	z.Member = member
 	switch job.Type {
 	case DelayTypeDuration:
-		z.Score = float64(job.DelayTime + time.Now().Unix())
+		z.Score = float64(delayTime + time.Now().Unix())
 	case DelayTypeDate:
-		z.Score = float64(job.DelayTime)
+		z.Score = float64(delayTime)
 	default:
-		z.Score = float64(job.DelayTime + time.Now().Unix())
+		z.Score = float64(delayTime + time.Now().Unix())
 	}
 	return r.client.ZAdd(r.ctx, key, &z).Err()
 }
