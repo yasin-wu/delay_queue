@@ -31,13 +31,9 @@ func (r *redisClient) zadd(job DelayJob) error {
 	}
 	var z redis.Z
 	z.Member = member
-	switch job.Type {
-	case DelayTypeDuration:
-		z.Score = float64(delayTime + time.Now().Unix())
-	case DelayTypeDate:
+	z.Score = float64(delayTime + time.Now().Unix())
+	if job.Type == DelayTypeDate {
 		z.Score = float64(delayTime)
-	default:
-		z.Score = float64(delayTime + time.Now().Unix())
 	}
 	return r.client.ZAdd(r.ctx, key, &z).Err()
 }
