@@ -1,3 +1,4 @@
+[![OSCS Status](https://www.oscs1024.com/platform/badge/yasin-wu/delay_queue.svg?size=small)](https://www.murphysec.com/dr/kFJ0vHLhJQTz8wiubq)
 ## 介绍
 
 delay queue 是基于Redis Zset实现的Golang版延时队列。以时间戳作为Score, 主动轮询小于当前时间的元素。新增延迟类型支持：支持延迟多少秒和延迟到具体时间。
