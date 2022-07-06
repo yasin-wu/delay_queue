@@ -46,13 +46,13 @@ func (r *redisClient) batchHandle(IDs []string) error {
 		go func(key string) {
 			batch, lastScore, err := r.getBatch(key)
 			if err != nil {
-				delayQueue.logger.ErrorF("get batch failed , error:%s", err.Error())
+				delayQueue.logger.Errorf("get batch failed , error:%s", err.Error())
 			} else {
 				for _, item := range batch {
 					var dj DelayJob
 					if item.Member != "" {
 						if err := json.Unmarshal([]byte(item.Member.(string)), &dj); err != nil {
-							delayQueue.logger.ErrorF("json unmarshal failed , error:%s", err.Error())
+							delayQueue.logger.Errorf("json unmarshal failed , error:%s", err.Error())
 							continue
 						}
 					}
@@ -60,7 +60,7 @@ func (r *redisClient) batchHandle(IDs []string) error {
 						continue
 					} else {
 						if err := executor.action.Execute(dj.Args); err != nil {
-							delayQueue.logger.ErrorF("job action execute failed , error:%s", err.Error())
+							delayQueue.logger.Errorf("job action execute failed , error:%s", err.Error())
 						}
 					}
 				}
@@ -68,7 +68,7 @@ func (r *redisClient) batchHandle(IDs []string) error {
 			defer func() {
 				if err != nil || len(batch) != 0 {
 					if err := r.clearBatch(key, lastScore); err != nil {
-						delayQueue.logger.ErrorF("clear batch failed , error:%s", err.Error())
+						delayQueue.logger.Errorf("clear batch failed , error:%s", err.Error())
 					}
 				}
 				wg.Done()

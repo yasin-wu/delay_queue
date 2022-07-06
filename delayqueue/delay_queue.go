@@ -50,7 +50,7 @@ func New(keyPrefix string, batchLimit int64, redisOptions *RedisOptions) *DelayQ
 		ctx:        context.Background(),
 	}
 	sche := cronjob.New()
-	sche.Register([]int{}, 1, DelayQueueCronJob{})
+	sche.Register([]int{}, 1, CronJob{})
 	delayQueue.logger = logger.DefaultLogger
 	delayQueue.scheduler = sche
 	delayQueue.jobExecutorFactory = make(map[string]*jobExecutor)
@@ -76,13 +76,13 @@ func (dq *DelayQueue) StartBackground() {
  */
 func (dq *DelayQueue) Register(action JobBaseAction) error {
 	jobID := action.ID()
-	if _, ok := dq.jobExecutorFactory[jobID]; ok {
+	_, ok := dq.jobExecutorFactory[jobID]
+	if ok {
 		return ErrorsDelayQueueRegisterIDDuplicate
-	} else {
-		dq.jobExecutorFactory[jobID] = &jobExecutor{
-			ID:     jobID,
-			action: action,
-		}
+	}
+	dq.jobExecutorFactory[jobID] = &jobExecutor{
+		ID:     jobID,
+		action: action,
 	}
 	return nil
 }
@@ -109,7 +109,7 @@ func (dq *DelayQueue) SetLogger(logger logger.Logger) {
 }
 
 func (dq *DelayQueue) availableJobIDs() []string {
-	var IDs []string
+	var IDs []string //nolint:prealloc
 	for k := range dq.jobExecutorFactory {
 		IDs = append(IDs, k)
 	}

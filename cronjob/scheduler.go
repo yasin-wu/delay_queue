@@ -30,7 +30,7 @@ func (sche *Scheduler) Register(phase []int, period int, job CronJob) {
 	}
 	jobName := job.Name()
 	if _, ok := sche.nameSet[jobName]; jobName == "" || ok {
-		sche.logger.ErrorF("CronJob register failed , JobName:%s", jobName)
+		sche.logger.Errorf("CronJob register failed , JobName:%s", jobName)
 	} else {
 		sche.jobs = append(sche.jobs, &Wrapper{
 			job:    job,
@@ -42,7 +42,7 @@ func (sche *Scheduler) Register(phase []int, period int, job CronJob) {
 }
 
 func (sche *Scheduler) Start() {
-	sche.logger.InfoF("CronJob starting......")
+	sche.logger.Infof("CronJob starting......")
 	for i := 0; i < len(sche.jobs); i++ {
 		if sche.jobs[i].ifActive() && sche.validateJob(sche.jobs[i]) {
 			go sche.run(sche.jobs[i])
@@ -81,29 +81,26 @@ func (sche *Scheduler) calculateNextTime(phase []int, period int, calCount int) 
 	if len(phase) == 0 {
 		if calCount == 0 {
 			return 0
-		} else {
-			return period
 		}
+		return period
+	}
+	nowTimePhase := int((time.Now().Unix() + 28800) % 86400)
+	i := 0
+	for i = 0; i < len(phase); i++ {
+		if nowTimePhase < phase[i] {
+			break
+		}
+	}
+	if i == len(phase) {
+		return period - nowTimePhase + phase[0]
 	} else {
-		nowTimePhase := int((time.Now().Unix() + 28800) % 86400)
-		var i = 0
-		for i = 0; i < len(phase); i++ {
-			if nowTimePhase < phase[i] {
-				break
-			}
-		}
-		if i == len(phase) {
-			return period - nowTimePhase + phase[0]
-		} else {
-			return phase[i] - nowTimePhase
-		}
+		return phase[i] - nowTimePhase
 	}
 }
 
 func (sche *Scheduler) validateJob(job *Wrapper) bool {
 	if len(job.phase) == 0 {
 		return job.period > 0
-	} else {
-		return job.period >= SecondOfDay && job.period%SecondOfDay == 0
 	}
+	return job.period >= SecondOfDay && job.period%SecondOfDay == 0
 }

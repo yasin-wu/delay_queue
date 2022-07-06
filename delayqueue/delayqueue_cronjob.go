@@ -1,20 +1,20 @@
 package delayqueue
 
-type DelayQueueCronJob struct{}
+type CronJob struct{}
 
-func (DelayQueueCronJob) Name() string {
+func (CronJob) Name() string {
 	return "DelayQCron"
 }
 
-func (DelayQueueCronJob) Process() error {
+func (CronJob) Process() error {
 	IDs := delayQueue.availableJobIDs()
 	return delayQueue.redisCli.batchHandle(IDs)
 }
 
-func (DelayQueueCronJob) IfActive() bool {
+func (CronJob) IfActive() bool {
 	return true
 }
 
-func (DelayQueueCronJob) IfReboot() bool {
+func (CronJob) IfReboot() bool {
 	return true
 }
