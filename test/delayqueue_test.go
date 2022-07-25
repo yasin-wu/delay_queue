@@ -9,7 +9,7 @@ import (
 	"github.com/yasin-wu/delay_queue/v2/delayqueue"
 )
 
-var redisOptions = &delayqueue.RedisOptions{Addr: "47.108.155.25:6379", Password: "yasinwu"}
+var redisOptions = &delayqueue.RedisOptions{Addr: "localhost:6379", Password: "yasinwu"}
 
 type JobActionSMS struct{}
 
@@ -19,7 +19,7 @@ func (JobActionSMS) ID() string {
 	return "JobActionSMS"
 }
 
-func (JobActionSMS) Execute(args []interface{}) error {
+func (JobActionSMS) Execute(args []any) error {
 	for _, arg := range args {
 		if phoneNumber, ok := arg.(string); ok {
 			fmt.Printf("sending sms to %s,time:%v\n", phoneNumber, time.Now().Format("2006-01-02 15:04:05"))
@@ -30,18 +30,16 @@ func (JobActionSMS) Execute(args []interface{}) error {
 
 func TestDelayQueue(t *testing.T) {
 	dq := delayqueue.New("test-yasin", 0, redisOptions)
-	err := dq.Register(JobActionSMS{})
-	if err != nil {
+	if err := dq.Register(JobActionSMS{}); err != nil {
 		log.Fatal(err)
 	}
 	dq.StartBackground()
 	fmt.Printf("add job:%v\n", time.Now().Format("2006-01-02 15:04:05"))
-	err = dq.AddJob(delayqueue.DelayJob{
+	if err := dq.AddJob(delayqueue.DelayJob{
 		ID:        (&JobActionSMS{}).ID(),
 		DelayTime: 5,
-		Args:      []interface{}{"181****9331"},
-	})
-	if err != nil {
+		Args:      []any{"181****9331"},
+	}); err != nil {
 		log.Fatal(err)
 	}
 	time.Sleep(20 * time.Second)

@@ -28,7 +28,7 @@ func (JobActionSMS) ID() string {
     return "JobActionSMS"
 }
 
-func (JobActionSMS) Execute(args []interface{}) error {
+func (JobActionSMS) Execute(args []any) error {
     for _, arg := range args {
         if phoneNumber, ok := arg.(string); ok {
             fmt.Printf("sending sms to %s,time:%v\n", phoneNumber, time.Now())
@@ -48,7 +48,7 @@ func main() {
     err = dq.AddJob(delayqueue.DelayJob{
         ID:        (&JobActionSMS{}).ID(),
         DelayTime: 10,
-        Args:      []interface{}{"181****9331"},
+        Args:      []any{"181****9331"},
     })
     if err != nil {
         log.Fatal(err)

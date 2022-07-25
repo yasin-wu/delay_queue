@@ -6,8 +6,8 @@ package delayqueue
  * @description: 延迟服务
  */
 type JobBaseAction interface {
-	ID() string                       // 服务唯一ID
-	Execute(args []interface{}) error // 服务执行动作
+	ID() string               // 服务唯一ID
+	Execute(args []any) error // 服务执行动作
 }
 
 type jobExecutor struct {
@@ -21,10 +21,10 @@ type jobExecutor struct {
  * @description: 延迟任务
  */
 type DelayJob struct {
-	ID        string        // 任务ID
-	Type      DelayType     // 时间类型:0-延迟多少秒执行,1-具体执行时间(时间戳:秒)
-	DelayTime int64         // 延迟执行时间,单位:秒
-	Args      []interface{} // 任务执行参数
+	ID        string    // 任务ID
+	Type      DelayType // 时间类型:0-延迟多少秒执行,1-具体执行时间(时间戳:秒)
+	DelayTime int64     // 延迟执行时间,单位:秒
+	Args      []any     // 任务执行参数
 
 }
 
