@@ -28,9 +28,8 @@ func (sche *Scheduler) Register(phase []int, period int, job CronJob) {
 			return phase[i] < phase[j]
 		})
 	}
-	jobName := job.Name()
-	if _, ok := sche.nameSet[jobName]; jobName == "" || ok {
-		sche.logger.Errorf("CronJob register failed , JobName:%s", jobName)
+	if _, ok := sche.nameSet[job.Name()]; job.Name() == "" || ok {
+		sche.logger.Errorf("CronJob register failed , JobName:%s", job.Name())
 	} else {
 		sche.jobs = append(sche.jobs, &Wrapper{
 			job:    job,
@@ -93,9 +92,8 @@ func (sche *Scheduler) calculateNextTime(phase []int, period int, calCount int) 
 	}
 	if i == len(phase) {
 		return period - nowTimePhase + phase[0]
-	} else {
-		return phase[i] - nowTimePhase
 	}
+	return phase[i] - nowTimePhase
 }
 
 func (sche *Scheduler) validateJob(job *Wrapper) bool {
