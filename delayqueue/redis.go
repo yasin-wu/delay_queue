@@ -3,6 +3,7 @@ package delayqueue
 import (
 	"context"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"sync"
 	"time"
@@ -29,6 +30,9 @@ func (r *redisClient) zadd(job DelayJob) error {
 	if err != nil {
 		return err
 	}
+	if len(member) == 0 {
+		return errors.New("job is empty")
+	}
 	var z redis.Z
 	z.Member = member
 	z.Score = float64(delayTime + time.Now().Unix())
@@ -47,29 +51,25 @@ func (r *redisClient) batchHandle(IDs []string) error {
 			batch, lastScore, err := r.getBatch(key)
 			if err != nil {
 				delayQueue.logger.Errorf("get batch failed , error:%s", err.Error())
-			} else {
-				for _, item := range batch {
-					var dj DelayJob
-					if item.Member != "" {
-						if err := json.Unmarshal([]byte(item.Member.(string)), &dj); err != nil {
-							delayQueue.logger.Errorf("json unmarshal failed , error:%s", err.Error())
-							continue
-						}
-					}
-					if executor, ok := delayQueue.jobExecutorFactory[dj.ID]; !ok {
-						continue
-					} else {
-						if err := executor.action.Execute(dj.Args); err != nil {
-							delayQueue.logger.Errorf("job action execute failed , error:%s", err.Error())
-						}
+				return
+			}
+			for _, item := range batch {
+				var dj DelayJob
+				if err := json.Unmarshal([]byte(item.Member.(string)), &dj); err != nil {
+					delayQueue.logger.Errorf("json unmarshal failed , error:%s", err.Error())
+					continue
+				}
+				if executor, ok := delayQueue.jobExecutorFactory[dj.ID]; !ok {
+					continue
+				} else {
+					if err := executor.action.Execute(dj.Args); err != nil {
+						delayQueue.logger.Errorf("job action execute failed , error:%s", err.Error())
 					}
 				}
 			}
 			defer func() {
 				if err != nil || len(batch) != 0 {
-					if err := r.clearBatch(key, lastScore); err != nil {
-						delayQueue.logger.Errorf("clear batch failed , error:%s", err.Error())
-					}
+					r.clearBatch(key, lastScore)
 				}
 				wg.Done()
 			}()
@@ -98,8 +98,10 @@ func (r *redisClient) getBatch(key string) ([]redis.Z, int64, error) {
 	return redisZs, lastScore, err
 }
 
-func (r *redisClient) clearBatch(key string, lastScore int64) error {
-	return r.client.ZRemRangeByScore(r.ctx, key, "0", fmt.Sprintf("%d", lastScore)).Err()
+func (r *redisClient) clearBatch(key string, lastScore int64) {
+	if err := r.client.ZRemRangeByScore(r.ctx, key, "0", fmt.Sprintf("%d", lastScore)).Err(); err != nil {
+		delayQueue.logger.Errorf("clear batch failed , error:%s", err.Error())
+	}
 }
 
 func (r *redisClient) formatKey(name string) string {
