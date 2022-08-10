@@ -6,14 +6,18 @@ import (
 	"testing"
 	"time"
 
-	"github.com/yasin-wu/delay_queue/v2/delayqueue"
+	"github.com/yasin-wu/delay_queue/v2/internal/redis"
+
+	"github.com/yasin-wu/delay_queue/v2/pkg"
+
+	"github.com/yasin-wu/delay_queue/v2/dqueue"
 )
 
-var redisOptions = &delayqueue.RedisOptions{Addr: "localhost:6379", Password: "yasinwu"}
+var redisOptions = &redis.Options{Addr: "localhost:6379", Password: "yasinwu"}
 
 type JobActionSMS struct{}
 
-var _ delayqueue.JobBaseAction = (*JobActionSMS)(nil)
+var _ pkg.JobBaseAction = (*JobActionSMS)(nil)
 
 func (JobActionSMS) ID() string {
 	return "JobActionSMS"
@@ -29,13 +33,13 @@ func (JobActionSMS) Execute(args []any) error {
 }
 
 func TestDelayQueue(t *testing.T) {
-	dq := delayqueue.New("test-yasin", 0, redisOptions)
+	dq := dqueue.New("test-yasin", 0, redisOptions)
 	if err := dq.Register(JobActionSMS{}); err != nil {
 		log.Fatal(err)
 	}
 	dq.StartBackground()
 	fmt.Printf("add job:%v\n", time.Now().Format("2006-01-02 15:04:05"))
-	if err := dq.AddJob(delayqueue.DelayJob{
+	if err := dq.AddJob(pkg.DelayJob{
 		ID:        (&JobActionSMS{}).ID(),
 		DelayTime: 5,
 		Args:      []any{"181****9331"},

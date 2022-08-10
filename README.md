@@ -12,7 +12,7 @@ go get -u github.com/yasin-wu/delay_queue
 推荐使用go.mod
 
 ```
-require github.com/yasin-wu/delay_queue/v2 v2.0.1
+require github.com/yasin-wu/delay_queue/v2 v2.1.0
 ```
 
 ## 使用
@@ -22,7 +22,7 @@ var redisOptions = &delayqueue.RedisOptions{Addr: "47.108.155.25:6379", Password
 
 type JobActionSMS struct{}
 
-var _ delayqueue.JobBaseAction = (*JobActionSMS)(nil)
+var _ pkg.JobBaseAction = (*JobActionSMS)(nil)
 
 func (JobActionSMS) ID() string {
     return "JobActionSMS"
@@ -38,14 +38,14 @@ func (JobActionSMS) Execute(args []any) error {
 }
 
 func main() {
-    dq := delayqueue.New("test-yasin", 0, redisOptions)
+    dq := dqueue.New("test-yasin", 0, redisOptions)
     err := dq.Register(JobActionSMS{})
     if err != nil {
         log.Fatal(err)
     }
     dq.StartBackground()
     fmt.Printf("add job:%v\n", time.Now())
-    err = dq.AddJob(delayqueue.DelayJob{
+    err = dq.AddJob(pkg.DelayJob{
         ID:        (&JobActionSMS{}).ID(),
         DelayTime: 10,
         Args:      []any{"181****9331"},

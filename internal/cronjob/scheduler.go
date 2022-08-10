@@ -5,20 +5,22 @@ import (
 	"sort"
 	"time"
 
-	"github.com/yasin-wu/delay_queue/v2/logger"
+	"github.com/yasin-wu/delay_queue/v2/internal/logger"
 )
 
 type Scheduler struct {
-	jobs    []*Wrapper
-	logger  logger.Logger
-	nameSet map[string]bool
+	jobs        []*Wrapper
+	logger      logger.Logger
+	nameSet     map[string]bool
+	secondOfDay int
 }
 
 func New() *Scheduler {
 	return &Scheduler{
-		jobs:    nil,
-		nameSet: make(map[string]bool),
-		logger:  logger.DefaultLogger,
+		jobs:        nil,
+		nameSet:     make(map[string]bool),
+		logger:      logger.DefaultLogger,
+		secondOfDay: 24 * 60 * 60,
 	}
 }
 
@@ -100,5 +102,5 @@ func (sche *Scheduler) validateJob(job *Wrapper) bool {
 	if len(job.phase) == 0 {
 		return job.period > 0
 	}
-	return job.period >= SecondOfDay && job.period%SecondOfDay == 0
+	return job.period >= sche.secondOfDay && job.period%sche.secondOfDay == 0
 }

@@ -1,18 +1,8 @@
-package delayqueue
+package pkg
 
-/**
- * @author: yasinWu
- * @date: 2022/1/13 11:06
- * @description: 延迟服务
- */
 type JobBaseAction interface {
-	ID() string               // 服务唯一ID
-	Execute(args []any) error // 服务执行动作
-}
-
-type jobExecutor struct {
-	ID     string
-	action JobBaseAction
+	ID() string
+	Execute(args []any) error
 }
 
 /**
