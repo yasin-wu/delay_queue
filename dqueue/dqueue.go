@@ -63,8 +63,10 @@ func (dq *DelayQueue) AddJob(job pkg.DelayJob) error {
 }
 
 func (dq *DelayQueue) SetLogger(logger logger.Logger) {
-	dq.logger = logger
-	dq.redisCli.SetLogger(logger)
+	if logger != nil {
+		dq.logger = logger
+		dq.redisCli.SetLogger(logger)
+	}
 }
 
 func (dq *DelayQueue) availableJobIDs() []string {
