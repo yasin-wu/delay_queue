@@ -3,7 +3,7 @@ package consts
 import (
 	"errors"
 
-	"github.com/yasin-wu/delay_queue/v2/internal/redis"
+	"github.com/yasin-wu/delay_queue/v2/pkg"
 )
 
 const (
@@ -13,5 +13,5 @@ const (
 
 var (
 	ErrDelayQueueRegisterIDDuplicate = errors.New("your job id has been used")
-	DefaultRedisOptions              = &redis.Options{Addr: "localhost:6379", Password: "", DB: 0}
+	DefaultRedisOptions              = &pkg.Options{Addr: "localhost:6379", Password: "", DB: 0}
 )

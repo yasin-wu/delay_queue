@@ -22,9 +22,9 @@ type DelayQueue struct {
 	redisCli           *redis.Client
 }
 
-func New(keyPrefix string, batchLimit int64, redisOptions *redis.Options) *DelayQueue {
-	if redisOptions == nil {
-		redisOptions = consts.DefaultRedisOptions
+func New(keyPrefix string, batchLimit int64, options *pkg.Options) *DelayQueue {
+	if options == nil {
+		options = consts.DefaultRedisOptions
 	}
 	if keyPrefix == "" {
 		keyPrefix = consts.DefaultKeyPrefix
@@ -38,7 +38,7 @@ func New(keyPrefix string, batchLimit int64, redisOptions *redis.Options) *Delay
 	delayQueue.logger = logger.DefaultLogger
 	delayQueue.scheduler = sche
 	delayQueue.jobExecutorFactory = make(map[string]*dqueue.JobExecutor)
-	delayQueue.redisCli = redis.New(keyPrefix, batchLimit, redisOptions)
+	delayQueue.redisCli = redis.New(keyPrefix, batchLimit, options)
 	return delayQueue
 }
 

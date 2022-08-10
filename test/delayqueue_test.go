@@ -6,14 +6,12 @@ import (
 	"testing"
 	"time"
 
-	"github.com/yasin-wu/delay_queue/v2/internal/redis"
-
 	"github.com/yasin-wu/delay_queue/v2/pkg"
 
 	"github.com/yasin-wu/delay_queue/v2/dqueue"
 )
 
-var redisOptions = &redis.Options{Addr: "localhost:6379", Password: "yasinwu"}
+var redisOptions = &pkg.Options{Addr: "localhost:6379", Password: "yasinwu"}
 
 type JobActionSMS struct{}
 

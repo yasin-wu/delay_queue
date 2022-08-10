@@ -14,8 +14,6 @@ import (
 	"github.com/go-redis/redis/v8"
 )
 
-type Options redis.Options
-
 type Client struct {
 	keyPrefix  string
 	batchLimit int64
@@ -24,7 +22,7 @@ type Client struct {
 	logger     logger.Logger
 }
 
-func New(keyPrefix string, batchLimit int64, redisOptions *Options) *Client {
+func New(keyPrefix string, batchLimit int64, redisOptions *pkg.Options) *Client {
 	return &Client{
 		keyPrefix:  keyPrefix,
 		batchLimit: batchLimit,

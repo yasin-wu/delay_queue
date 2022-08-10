@@ -1,5 +1,7 @@
 package pkg
 
+import "github.com/go-redis/redis/v8"
+
 type JobBaseAction interface {
 	ID() string
 	Execute(args []any) error
@@ -25,3 +27,5 @@ const (
 	DelayTypeDuration DelayType = iota // 延迟多少秒执行
 	DelayTypeDate                      // 具体执行时间(时间戳:秒)
 )
+
+type Options redis.Options
