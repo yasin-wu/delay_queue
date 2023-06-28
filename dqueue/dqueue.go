@@ -62,6 +62,10 @@ func (dq *DelayQueue) AddJob(job pkg.DelayJob) error {
 	return dq.redisCli.Zadd(job)
 }
 
+func (dq *DelayQueue) RemoveJob(job pkg.DelayJob) error {
+	return dq.redisCli.Zremove(job)
+}
+
 func (dq *DelayQueue) SetLogger(logger logger.Logger) {
 	if logger != nil {
 		dq.logger = logger

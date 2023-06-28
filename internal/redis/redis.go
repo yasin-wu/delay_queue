@@ -52,6 +52,19 @@ func (c *Client) Zadd(job pkg.DelayJob) error {
 	return c.client.ZAdd(c.ctx, key, &z).Err()
 }
 
+func (c *Client) Zremove(job pkg.DelayJob) error {
+	key := c.FormatKey(job.ID)
+	job.DelayTime = -1
+	member, err := json.Marshal(job)
+	if err != nil {
+		return err
+	}
+	if len(member) == 0 {
+		return errors.New("job is empty")
+	}
+	return c.client.ZRem(c.ctx, key, member).Err()
+}
+
 func (c *Client) GetBatch(key string) ([]redis.Z, int64, error) {
 	var redisZs []redis.Z
 	var lastScore int64
