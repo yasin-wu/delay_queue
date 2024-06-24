@@ -1,0 +1,76 @@
+# https://golangci-lint.run/usage/linters/
+service:
+  golangci-lint-version: 1.59.1
+
+run:
+  go: "1.18"
+
+linters-settings:
+  misspell:
+    locale: US
+  lll:
+    line-length: 140
+  tagliatelle:
+    case:
+      use-field-name: true
+      rules:
+        json: snake
+        yaml: snake
+        xml: snake
+        whatever: snake
+
+linters:
+  disable-all: true
+  enable:
+    # 检查http response是否成功关闭
+    - bodyclose
+    # 检查长函数
+    - funlen
+    # 检查是否有需要使用const代替的strings类型
+    - goconst
+    # 检查和检查函数的圈复杂度
+    - gocyclo
+    # 检查代码中是否有非ascii码值
+    - asciicheck
+    # 检查代码是否被gofmt过了
+    - gofmt
+    # 检测变量的赋值
+    - ineffassign
+    # 静态检查
+    - staticcheck
+    # 类似编译的前端，解析和检查type
+    - typecheck
+    # 检查字段
+    - revive
+    # 简化代码
+    - gosimple
+    # 检查源代码、报告可疑的结构体，如果Printf函数调用，参数没有对齐字符串格式
+    - govet
+    # 检查语句长度
+    - lll
+    # 检查没有使用的go代码，包含没有使用的常量、变量、函数、和类型
+    - unused
+    # 检查没有判断err的场景，这些没有检查的场景可能导致致命bug在某些场景
+    - errcheck
+    # 检查英文单词错误
+    - misspell
+    # 上报没有使用的函数参数
+    - unparam
+    # 检查深度嵌套的if语句
+    - nestif
+    # 去掉没有必要的type转换
+    - unconvert
+    # 返回两个参数，一个数据，一个是err，两个都是nil，不是推荐的
+    - nilnil
+    # 检查struct的tags的格式
+    - tagliatelle
+
+issues:
+  exclude:
+    - ".IDs"
+  exclude-files:
+    - _test.go
+  exclude-rules:
+    - linters:
+        - staticcheck
+      text: 'SA5008: unknown JSON option ("optional"|"default=|"range=|"options=)'
