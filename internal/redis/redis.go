@@ -75,12 +75,15 @@ func (c *Client) GetBatch(key string) ([]redis.Z, int64, error) {
 	opt.Offset = 0
 	opt.Count = c.batchLimit
 	redisZs, err = c.client.ZRangeByScoreWithScores(c.ctx, key, &opt).Result()
-	if err != nil || len(redisZs) == 0 {
-		return redisZs, lastScore, err
+	if len(redisZs) > 0 {
+		lastScore = int64(redisZs[len(redisZs)-1].Score)
 	}
-	lastScore = int64(redisZs[len(redisZs)-1].Score)
-	opt.Max = fmt.Sprintf("%d", lastScore)
-	redisZs, err = c.client.ZRangeByScoreWithScores(c.ctx, key, &opt).Result()
+	//if err != nil || len(redisZs) == 0 {
+	//	return redisZs, lastScore, err
+	//}
+	//lastScore = int64(redisZs[len(redisZs)-1].Score)
+	//opt.Max = fmt.Sprintf("%d", lastScore)
+	//redisZs, err = c.client.ZRangeByScoreWithScores(c.ctx, key, &opt).Result()
 	return redisZs, lastScore, err
 }
 
