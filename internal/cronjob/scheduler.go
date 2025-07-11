@@ -1,7 +1,6 @@
 package cronjob
 
 import (
-	"fmt"
 	"sort"
 	"time"
 
@@ -65,22 +64,13 @@ func (sche *Scheduler) run(job *Wrapper) {
 		} else {
 			break
 		}
-		err := func() (err error) {
-			defer func() {
-				if r := recover(); r != nil {
-					sche.logger.Errorf("job %s panic, recover=%v", job.name(), r)
-					err = fmt.Errorf("job %s panic, recover=%v", job.name(), r)
-				}
-			}()
-			sche.logger.Infof("job %s start: %v", job.name(), time.Now().Format("2006-01-02 15:04:05"))
-			return job.Process()
-		}()
-		sche.logger.Infof("job process finished: %v", job)
-		job.count++
+		err := job.Process()
 		if err != nil && !job.ifReboot() {
 			sche.logger.Errorf("job %s execute failed , error:%v", job.name(), err)
 			break
 		}
+		sche.logger.Infof("job process finished: %v", job)
+		job.count++
 	}
 }
 
