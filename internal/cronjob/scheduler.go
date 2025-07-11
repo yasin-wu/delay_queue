@@ -57,6 +57,7 @@ func (sche *Scheduler) SetLogger(logger logger.Logger) {
 
 func (sche *Scheduler) run(job *Wrapper) {
 	for {
+		sche.logger.Infof("job %v", job)
 		nextTimeInterval := sche.calculateNextTime(job.phase, job.period, job.count)
 		sche.logger.Infof("job %s next time: %v", job.name(), nextTimeInterval)
 		if nextTimeInterval >= 0 {
@@ -74,6 +75,7 @@ func (sche *Scheduler) run(job *Wrapper) {
 			sche.logger.Infof("job %s start: %v", job.name(), time.Now().Format("2006-01-02 15:04:05"))
 			return job.Process()
 		}()
+		sche.logger.Infof("job process finished: %v", job)
 		job.count++
 		if err != nil && !job.ifReboot() {
 			sche.logger.Errorf("job %s execute failed , error:%v", job.name(), err)

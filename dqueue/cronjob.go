@@ -5,6 +5,7 @@ import (
 	"sync"
 
 	"github.com/go-redis/redis/v8"
+
 	"github.com/yasin-wu/delay_queue/v2/pkg"
 )
 
@@ -27,6 +28,7 @@ func (CronJob) IfReboot() bool {
 }
 
 func (d *DelayQueue) batchHandle(ids []string) error {
+	d.logger.Infof("batch handle, ids: %v", ids)
 	var wg = sync.WaitGroup{}
 	wg.Add(len(ids))
 	for _, name := range ids {
